@@ -8,7 +8,7 @@ Segment Anything in Docker. A simple, easy to use Docker image for Meta's SAM2 w
 
 ## Quickstart
 
-This quickstart assumes you have access to an NVIDIA GPU.
+This quickstart assumes you have access to an NVIDIA GPU. You should have installed the NVIDIA drivers and CUDA toolkit for your GPU beforehand.
 
 First, let's install the NVIDIA Container Toolkit:
 
@@ -24,6 +24,8 @@ sudo systemctl restart docker
 To get the SAM2 Docker image up and running, you can run:
 
 ```bash
+sudo usermod -aG docker $USER
+newgrp docker
 docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix  -e DISPLAY=$DISPLAY --gpus all peasant98/sam2:latest bash
 ```
 
