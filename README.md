@@ -1,5 +1,4 @@
-# 👀 Segment Anything 2 + ROS Noetic ![image](https://github.com/user-attachments/assets/ff47e547-4b5c-4477-9d10-09dfce2aed27)
- + Docker  🐳
+# 👀 Segment Anything 2 + ROS Noetic <img src="https://github.com/user-attachments/assets/ff47e547-4b5c-4477-9d10-09dfce2aed27" width="48"> + Docker  🐳
 
 ## Quickstart
 
