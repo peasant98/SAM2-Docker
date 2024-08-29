@@ -1,52 +1,26 @@
-# 👀 Segment Anything 2 + Docker  🐳
-
-![image](https://github.com/user-attachments/assets/7911d7b8-72a7-4c90-9da6-7a867b0136f8)
-
-
-Segment Anything in Docker. A simple, easy to use Docker image for Meta's SAM2 with GUI support for displaying figures. Built on top of the SAM2 repo: https://github.com/facebookresearch/segment-anything-2
-
+# 👀 Segment Anything 2 + ROS Noetic ![image](https://github.com/user-attachments/assets/973b4fa5-915d-4d49-8ac0-e24b408b0af8) + Docker  🐳
 
 ## Quickstart
 
-This quickstart assumes you have access to an NVIDIA GPU. You should have installed the NVIDIA drivers and CUDA toolkit for your GPU beforehand. Also, make to install Docker [here](https://docs.docker.com/engine/install/).
-
-First, let's install the NVIDIA Container Toolkit:
-
+Read instructions on the main branch first. To use with ROS, run:
 ```bash
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
-   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-sudo apt-get update
-sudo apt-get install -y nvidia-docker2
-sudo systemctl restart docker
+docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --gpus all sam2-ros-docker bash
+```
+Inside the container, run
+```bash
+source ~/.bashrc
+gnome-terminal
 ```
 
-To get the SAM2 Docker image up and running, you can run:
+## Connecting to ROS running on the local host
 
+Run `roscore` in both machines to find the port being used. Then close the container and rerun with the `-p` flag: 
 ```bash
-sudo usermod -aG docker $USER
-newgrp docker
-docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix  -e DISPLAY=$DISPLAY --gpus all peasant98/sam2:latest bash
+docker run -it -p [HOST_PORT]:[CONTAINER_PORT] -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --gpus all sam2-ros-docker bash
 ```
 
-From this shell, you can run SAM2, as well as display plots and images.
-
-## Building and Running Locally
-
-To build and run the Dockerfile:
-
-```bash
-docker build -t sam2:latest . 
+To test, run `roscore` in the docker container and `rostopic list` on the local host. The local host should show
 ```
-
-And you can run as:
-
-```bash
-docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix  -e DISPLAY=$DISPLAY --gpus all sam2:latest bash
+/rosout
+/rosout_agg
 ```
-
-
-Example of running Python code to display masks:
-
-![alt text](image.png)
-
