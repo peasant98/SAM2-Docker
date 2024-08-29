@@ -40,8 +40,8 @@ RUN set -x \
     && apt-get install -y python3.11 python3.11-venv python3.11-dev \
     && apt-get install -y python3.11-tk
 
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1 \
-    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 2
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 \
+    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
 
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
@@ -50,12 +50,42 @@ WORKDIR /home/user
 
 RUN git clone https://github.com/facebookresearch/segment-anything-2 && \
     cd segment-anything-2 && \
-    python3 -m pip install -e . -v && \
-    python3 -m pip install -e ".[demo]" && \
+    python3.11 -m pip install -e . -v && \
+    python3.11   -m pip install -e ".[demo]" && \
     cd checkpoints && ./download_ckpts.sh && cd ..
+
+RUN apt-get update \
+ && apt-get install -y locales lsb-release
+ARG DEBIAN_FRONTEND=noninteractive
+RUN dpkg-reconfigure locales
+ 
+RUN set -x \
+    && sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' \
+    && apt install -y curl \
+    && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - \
+    && apt-get update \
+    && apt install -y ros-noetic-desktop-full
+RUN set -x \
+    && apt install -y python3-rosdep \
+    && apt-get install -y python3-pyqt5 \
+    && pip3 install shiboken2
+RUN set -x \
+    && rosdep init \
+    && rosdep fix-permissions \
+    && apt install -y gnome-terminal \
+    && apt install -y libgirepository1.0-dev \
+    && apt remove -y python3-pycryptodome
 
 RUN usermod -aG dialout user
 USER user
+
+RUN rosdep update
+RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+RUN sudo apt-get install -y python3-pip
+RUN python3 -m pip install PyGObject --force-reinstall
+RUN pip3 install pycryptodome
+RUN sudo apt install -y ros-noetic-desktop-full
+
 STOPSIGNAL SIGTERM
 
 
