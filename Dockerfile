@@ -1,5 +1,5 @@
 # Use an NVIDIA CUDA image as the base
-FROM nvidia/cuda:12.6.0-devel-ubuntu20.04
+FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
 
 # Set up environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -85,6 +85,33 @@ RUN sudo apt-get install -y python3-pip
 RUN python3 -m pip install PyGObject --force-reinstall
 RUN pip3 install pycryptodome
 RUN sudo apt install -y ros-noetic-desktop-full
+
+# Install Open3D system dependencies and pip
+# RUN apt-get update && apt-get install --no-install-recommends -y \
+#     libgl1 \
+#     libgomp1 \
+#     python3-pip \
+#     && sudo rm -rf /var/lib/apt/lists/*
+
+# Install Open3D from the pypi repositories
+# RUN python3 -m pip install --no-cache-dir --upgrade open3d
+
+RUN sudo echo "export PYTHONPATH="${PYTHONPATH}:/home/user/segment-anything-2"" >> ~/.bashrc
+RUN python3 -m pip install av && python3 -m pip install pynput
+# RUN python3.8 -m pip install cmake --upgrade
+# RUN cd /usr/bin && sudo rm cmake 
+# RUN sudo ln /home/user/.local/bin/cmake /usr/bin/cmake
+# RUN git clone https://github.com/isl-org/Open3D
+# RUN cd Open3D \
+#     && echo y | util/install_deps_ubuntu.sh \
+#     && mkdir build && cd build \
+#     && cmake .. \ 
+#     && make -j$(nproc) \
+#     && sudo make install \
+#     && sudo make install-pip-package 
+
+RUN python3.8 -m pip install --upgrade pip
+RUN python3.8 -m pip install open3d==0.18.0
 
 STOPSIGNAL SIGTERM
 
