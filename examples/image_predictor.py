@@ -93,7 +93,6 @@ if __name__ == '__main__':
 
 
     # lazy loading of sam2 imports
-    import sam2
     from sam2.build_sam import build_sam2
     from sam2.sam2_image_predictor import SAM2ImagePredictor
 
